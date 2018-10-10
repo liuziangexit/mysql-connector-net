@@ -1,4 +1,4 @@
-﻿// Copyright © 2017, 2018 Oracle and/or its affiliates. All rights reserved.
+﻿// Copyright © 2018, Oracle and/or its affiliates. All rights reserved.
 //
 // MySQL Connector/NET is licensed under the terms of the GPLv2
 // <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>, like most 
@@ -20,9 +20,28 @@
 // with this program; if not, write to the Free Software Foundation, Inc., 
 // 51 Franklin St, Fifth Floor, Boston, MA 02110-1301  USA
 
-using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Scaffolding;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
+using Microsoft.Extensions.Logging;
+using MySql.Data.EntityFrameworkCore.Design.Internal;
+using MySql.Data.EntityFrameworkCore.Tests;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-[assembly: DesignTimeProviderServices(
-  typeName: "MySql.Data.EntityFrameworkCore.Design.Internal.MySQLDesignTimeServices",
-  assemblyName: "MySql.Data.EntityFrameworkCore.Design, Version=6.10.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d",
-  packageName: "MySql.Data.EntityFrameworkCore.Design")]
+namespace MySql.EntityFrameworkCore.Design.Tests
+{
+  public partial class MySQLDatabaseModelFixture
+  {
+    public DatabaseModel CreateModel(string sql, TableSelectionSet selection, ILogger logger = null, bool executeScript = false)
+    {
+      if (executeScript)
+        MySQLTestStore.ExecuteScript(sql);
+      else
+        MySQLTestStore.Execute(sql);
+
+      return new MySQLDatabaseModelFactory(new MyTestLoggerFactory(logger).CreateLogger<MySQLDatabaseModelFactory>()).
+             Create(MySQLTestStore.rootConnectionString + ";database=" + dbName + ";", selection ?? TableSelectionSet.All);
+    }
+  }
+}
