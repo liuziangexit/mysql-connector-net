@@ -1,3 +1,7 @@
+lza-se
+- Add new Connection String option "CACertificateFile".This option specifies the path to a CA certificate file in a PEM Encoded (.pem) format.
+  This should be used in with SslMode=VerifyCA or SslMode=VerifyFull to enable verification of a CA certificate that is not trusted by the Operating System's certificate store.
+
 6.10.8
 - Improved the performance when opening connections by refactoring the MySqlConnectAttrs class. Improved the performance
   in Windows environments by optimizing the query that identifies the operating system details
