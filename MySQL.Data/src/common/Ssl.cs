@@ -172,7 +172,9 @@ namespace MySql.Data.Common
                 if (settings.SslMode == MySqlSslMode.VerifyCA)
                     return result && !sslPolicyErrors.HasFlag(SslPolicyErrors.RemoteCertificateNotAvailable);
                 if (settings.SslMode == MySqlSslMode.VerifyFull)
-                    return result && sslPolicyErrors == SslPolicyErrors.RemoteCertificateNameMismatch;
+                    return result
+                        && !sslPolicyErrors.HasFlag(SslPolicyErrors.RemoteCertificateNameMismatch)
+                        && !sslPolicyErrors.HasFlag(SslPolicyErrors.RemoteCertificateNotAvailable);
             }
 
             return false;
